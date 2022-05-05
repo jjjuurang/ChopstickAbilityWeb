@@ -19,7 +19,7 @@ from model import PointHistoryClassifier
 def get_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--device", type=int, default=2) #ì¹´ë©”ë¼ ê´€ë ¨
+    parser.add_argument("--device", type=int, default=0) #ì¹´ë©”?¼ ê´?? ¨
     parser.add_argument("--width", help='cap width', type=int, default=960)
     parser.add_argument("--height", help='cap height', type=int, default=540)
 
@@ -86,7 +86,7 @@ def main():
             row[0] for row in point_history_classifier_labels
         ]
 
-##    with open('model/video_classifier/video_classifier_label.csv', #videoìš© ì¶”ê°€
+##    with open('model/video_classifier/video_classifier_label.csv', #video?š© ì¶”ê??
 ##              encoding = 'utf-8-sig') as f:
 ##        video_classifier_labels = csv.reader(f)
 ##        video_classifier_labels = [
@@ -106,6 +106,7 @@ def main():
     #  ########################################################################
     mode = 0 #ê¸°ë³¸ëª¨ë“œ
 
+    checkMovement = []
     while True:
         fps = cvFpsCalc.get()
 
@@ -126,7 +127,7 @@ def main():
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
 
         image.flags.writeable = False
-        results = hands.process(image) #ì†ì¸ì‹ ê²°ê³¼ì˜ ê°ì²´ë¥¼ ì–»ì–´ì˜¤ëŠ” í•¨ìˆ˜
+        results = hands.process(image) #?†?¸?‹ ê²°ê³¼?˜ ê°ì²´ë¥? ?–»?–´?˜¤?Š” ?•¨?ˆ˜
         image.flags.writeable = True
 
         #  ####################################################################
@@ -293,7 +294,7 @@ def pre_process_point_history(image, point_history):
     return temp_point_history
 
 
-#csv íŒŒì¼ì— ì¢Œí‘œ ê°’ ì‘ì„±í•˜ëŠ” ì½”ë“œ
+#csv ?ŒŒ?¼?— ì¢Œí‘œ ê°? ?‘?„±?•˜?Š” ì½”ë“œ
 def logging_csv(number, mode, landmark_list, point_history_list): 
     if mode == 0:
         pass
@@ -410,87 +411,87 @@ def draw_landmarks(image, landmark_point):
 
     # Key Points
     for index, landmark in enumerate(landmark_point):
-        if index == 0:  # æ‰‹é¦–1
+        if index == 0:  # ?‰‹é¦?1
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 1:  # æ‰‹é¦–2
+        if index == 1:  # ?‰‹é¦?2
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 2:  # è¦ªæŒ‡ï¼šä»˜ã‘æ ¹
+        if index == 2:  # è¦ªæŒ‡ï¼šä»˜?‘? ¹
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 3:  # è¦ªæŒ‡ï¼šç¬¬1é–¢ç¯€
+        if index == 3:  # è¦ªæŒ‡ï¼šç¬¬1?–¢ç¯?
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 4:  # è¦ªæŒ‡ï¼šæŒ‡å…ˆ
+        if index == 4:  # è¦ªæŒ‡ï¼šæŒ‡?…ˆ
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
-        if index == 5:  # äººå·®æŒ‡ï¼šä»˜ã‘æ ¹
+        if index == 5:  # äººå·®?Œ‡ï¼šä»˜?‘? ¹
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 6:  # äººå·®æŒ‡ï¼šç¬¬2é–¢ç¯€
+        if index == 6:  # äººå·®?Œ‡ï¼šç¬¬2?–¢ç¯?
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 7:  # äººå·®æŒ‡ï¼šç¬¬1é–¢ç¯€
+        if index == 7:  # äººå·®?Œ‡ï¼šç¬¬1?–¢ç¯?
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 8:  # äººå·®æŒ‡ï¼šæŒ‡å…ˆ
+        if index == 8:  # äººå·®?Œ‡ï¼šæŒ‡?…ˆ
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
-        if index == 9:  # ä¸­æŒ‡ï¼šä»˜ã‘æ ¹
+        if index == 9:  # ä¸??Œ‡ï¼šä»˜?‘? ¹
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 10:  # ä¸­æŒ‡ï¼šç¬¬2é–¢ç¯€
+        if index == 10:  # ä¸??Œ‡ï¼šç¬¬2?–¢ç¯?
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 11:  # ä¸­æŒ‡ï¼šç¬¬1é–¢ç¯€
+        if index == 11:  # ä¸??Œ‡ï¼šç¬¬1?–¢ç¯?
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 12:  # ä¸­æŒ‡ï¼šæŒ‡å…ˆ
+        if index == 12:  # ä¸??Œ‡ï¼šæŒ‡?…ˆ
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
-        if index == 13:  # è–¬æŒ‡ï¼šä»˜ã‘æ ¹
+        if index == 13:  # ?–¬?Œ‡ï¼šä»˜?‘? ¹
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 14:  # è–¬æŒ‡ï¼šç¬¬2é–¢ç¯€
+        if index == 14:  # ?–¬?Œ‡ï¼šç¬¬2?–¢ç¯?
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 15:  # è–¬æŒ‡ï¼šç¬¬1é–¢ç¯€
+        if index == 15:  # ?–¬?Œ‡ï¼šç¬¬1?–¢ç¯?
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 16:  # è–¬æŒ‡ï¼šæŒ‡å…ˆ
+        if index == 16:  # ?–¬?Œ‡ï¼šæŒ‡?…ˆ
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
-        if index == 17:  # å°æŒ‡ï¼šä»˜ã‘æ ¹
+        if index == 17:  # å°æŒ‡ï¼šä»˜?‘? ¹
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 18:  # å°æŒ‡ï¼šç¬¬2é–¢ç¯€
+        if index == 18:  # å°æŒ‡ï¼šç¬¬2?–¢ç¯?
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 19:  # å°æŒ‡ï¼šç¬¬1é–¢ç¯€
+        if index == 19:  # å°æŒ‡ï¼šç¬¬1?–¢ç¯?
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 20:  # å°æŒ‡ï¼šæŒ‡å…ˆ
+        if index == 20:  # å°æŒ‡ï¼šæŒ‡?…ˆ
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
