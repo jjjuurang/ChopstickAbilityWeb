@@ -88,7 +88,11 @@ def main():
     mode = 0 #기본모드
     
     validate = []
+    invalidate_count = 0
     begin = time.time()
+
+    passing = False
+
     
     while True:
         fps = cvFpsCalc.get()
@@ -112,6 +116,7 @@ def main():
         results = hands.process(image) #손인식 결과의 객체를 얻어오는 함수
         image.flags.writeable = True
 
+
         #  ####################################################################
         if results.multi_hand_landmarks is not None:
             for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
@@ -131,19 +136,31 @@ def main():
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
 
                 validate.append(hand_sign_id) #append hand_result index
+                if hand_sign_id != mode:
+                    invalidate_count += 1
+                    
 
-
-                
                 # Drawing part
                 debug_image = draw_bounding_rect(use_brect, debug_image, brect)
-
                 debug_image = draw_hand_classification(debug_image, keypoint_classifier_labels[hand_sign_id])
+
+                begin, passed = time_checker(begin, validate, invalidate_count)
+
+                #한번 패스되면 패스로 영구적 인식
+                if passed == True:
+                    passing = True
+
+        else:
+            begin = time.time()
+            print(int(begin))
+            passing = False
+            
+
 
 
                 
-        debug_image = draw_info(debug_image, fps, mode)
-
-
+        debug_image = draw_info(debug_image, fps, mode, passing)
+            
 
         # Screen reflection #############################################################
         cv.imshow('Hand Gesture Recognition', debug_image)
@@ -217,6 +234,31 @@ def pre_process_landmark(landmark_list):
 
 
 
+def time_checker(begin, validate, invalidate_count):
+    now = time.time()
+
+    print("begin: " , int(begin) , "now: " , int(now))
+    if validate is None:
+        return now, False
+    
+    if now - begin >= 6:
+        print("성공")
+        return begin, True
+    elif now - begin >= 2:
+        if float(invalidate_count)/float(len(validate)) >= 0.8:
+            return begin, False
+        else: #(float)invalidate_count/(float)len(validate) < 0.8:
+            validate.clear()
+            return now, False
+    else: #now - begin < 2:
+        return begin, False
+        
+        
+        
+    
+    
+
+
 def draw_bounding_rect(use_brect, image, brect):
     if use_brect:
         # Outer rectangle
@@ -254,22 +296,31 @@ def draw_hand_classification(image, hand_sign_id):
     return image
     
 
-def draw_info(image, fps, mode):
+def draw_info(image, fps, mode, passing):
 
     mode_string = ''
     
-    if mode == 0:
-        mode_string = 'STEP 0'
-    elif mode == 1:
+    if mode == 1:
         mode_string = 'STEP 1'
     elif mode == 2:
         mode_string = 'STEP 2'
     elif mode == 3:
         mode_string = 'STEP 3'
+    elif mode == 4:
+        mode_string = 'STEP 4'
     
     cv.putText(image, "MODE:" + mode_string, (10, 90),
                    cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1,
                    cv.LINE_AA)
+
+    if passing == True:
+        is_passed = "TRUE"
+    else:
+        is_passed = "FALSE"
+
+    cv.putText(image, "PASSED: " + is_passed, (10, 150),
+               cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1,
+               cv.LINE_AA)
 
     return image
 
